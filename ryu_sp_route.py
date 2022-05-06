@@ -405,7 +405,10 @@ class ShortestPath(app_manager.RyuApp):
             mod = datapath.ofproto_parser.OFPFlowMod(
                 datapath=datapath, match=match, cookie=0,
                 command=ofproto.OFPFC_ADD, idle_timeout=0, hard_timeout=0,
-                priority=1,instructions=inst)
+                instructions=inst, priority=1)
+        datapath.send_msg(mod)
+
+
 #             idle_timeout (0)
 
 # Flow Entry 的有效期限，以秒為單位。Flow Entry 如果未被參照而且超過了指定的時間之後， 該 Flow Entry 將會被刪除。如果 Flow Entry 有被參照，則超過時間之後會重新歸零計算。
@@ -417,7 +420,7 @@ class ShortestPath(app_manager.RyuApp):
 # Flow Entry 的有效期限，以秒為單位。跟 idle_timeout 不同的地方是， hard_timeout 在超過時限後並不會重新歸零計算。 也就是說跟 Flow Entry 與有沒有被參照無關，只要超過指定的時間就會被刪除。
 
 # 跟 idle_timeout 一樣，當 Flow Entry 被刪除時，Flow Removed 訊息將會被發送來通知 Controller。
-#         datapath.send_msg(mod)
+
 
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
     def _packet_in_handler(self, ev):
